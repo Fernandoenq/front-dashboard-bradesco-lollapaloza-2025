@@ -6,7 +6,7 @@ import Popup from "../../components/Popup";
 const Movimentacoes: React.FC = () => {
   const { eventDays, loading: loadingDays, error } = useEventDaysApi();
   const [selectedEventDayId, setSelectedEventDayId] = useState<number | null>(null);
-  const { loading, dadosGerais, showPopup, popupMessage } = useMovimentacoesApi(selectedEventDayId);
+  const { loading, dadosGerais, showPopup, popupMessage, downloadExcel, loadingDownload } = useMovimentacoesApi(selectedEventDayId);
 
   // Quando as datas forem carregadas, definir a primeira como padrão
   useEffect(() => {
@@ -23,13 +23,13 @@ const Movimentacoes: React.FC = () => {
       {/* Popup de mensagens */}
       <Popup show={showPopup} message={popupMessage} />
 
-      {/* Seletor de datas estilizado */}
+      {/* Seletor de datas + Botão de Download */}
       {loadingDays ? (
         <p>Carregando datas...</p>
       ) : error ? (
         <p className="text-danger">{error}</p>
       ) : (
-        <div className="d-flex justify-content-center mb-3">
+        <div className="d-flex justify-content-between mb-3">
           <div className="btn-group">
             {eventDays.map((day) => (
               <button
@@ -41,6 +41,13 @@ const Movimentacoes: React.FC = () => {
               </button>
             ))}
           </div>
+          <button
+            className="btn btn-success"
+            onClick={downloadExcel}
+            disabled={selectedEventDayId === null || loadingDownload}
+          >
+            {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
+          </button>
         </div>
       )}
 

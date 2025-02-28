@@ -6,7 +6,7 @@ import Popup from "../../components/Popup";
 const Participantes: React.FC = () => {
   const { eventDays, loading: loadingDays, error } = useEventDaysApi();
   const [selectedEventDayId, setSelectedEventDayId] = useState<number | null>(null);
-  const { loading, participantes, showPopup, popupMessage } = useParticipantesApi(selectedEventDayId);
+  const { loading, participantes, showPopup, popupMessage, downloadExcel, loadingDownload } = useParticipantesApi(selectedEventDayId);
 
   // Definir automaticamente o primeiro event_day_id
   useEffect(() => {
@@ -23,13 +23,13 @@ const Participantes: React.FC = () => {
       {/* Popup de mensagens */}
       <Popup show={showPopup} message={popupMessage} />
 
-      {/* Seletor de datas estilizado */}
+      {/* Seletor de datas + Botão de Download */}
       {loadingDays ? (
         <p>Carregando datas...</p>
       ) : error ? (
         <p className="text-danger">{error}</p>
       ) : (
-        <div className="d-flex justify-content-center mb-3">
+        <div className="d-flex justify-content-between mb-3">
           <div className="btn-group">
             {eventDays.map((day) => (
               <button
@@ -41,6 +41,13 @@ const Participantes: React.FC = () => {
               </button>
             ))}
           </div>
+          <button
+            className="btn btn-success"
+            onClick={downloadExcel}
+            disabled={selectedEventDayId === null || loadingDownload}
+          >
+            {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
+          </button>
         </div>
       )}
 

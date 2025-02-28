@@ -7,6 +7,7 @@ export const useMovimentacoesApi = (selectedEventDayId: number | null) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [popupMessage, setPopupMessage] = useState<string>("");
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
 
   // Função para buscar as movimentações filtradas pelo event_day_id
   const fetchMovimentacoes = async () => {
@@ -48,5 +49,38 @@ export const useMovimentacoesApi = (selectedEventDayId: number | null) => {
     fetchMovimentacoes();
   }, [selectedEventDayId]); // Refazer a busca quando a data mudar
 
-  return { dadosGerais, loading, showPopup, popupMessage };
+  // Função para baixar o Excel
+  const downloadExcel = async () => {
+    if (selectedEventDayId === null) return;
+
+    setLoadingDownload(true);
+    const url = `${API_BASE_URL}/Dashboard/DownloadAllBalance/${selectedEventDayId}`;
+    console.log(`📥 Baixando arquivo de: ${url}`);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao baixar o arquivo.");
+      }
+
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `Movimentacoes_Dia_${selectedEventDayId}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      console.log("✅ Download concluído!");
+    } catch (error) {
+      console.error("🚨 Erro ao baixar o arquivo:", error);
+    }
+
+    setLoadingDownload(false);
+  };
+
+  return { dadosGerais, loading, showPopup, popupMessage, downloadExcel, loadingDownload };
 };
