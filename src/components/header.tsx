@@ -1,11 +1,21 @@
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const MenuSuperior: React.FC = () => {
+interface MenuSuperiorProps {
+  setActiveSection: (section: "movimentacoes" | "participantes") => void;
+  activeSection: "movimentacoes" | "participantes";
+}
+
+const MenuSuperior: React.FC<MenuSuperiorProps> = ({ setActiveSection, activeSection }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">Braskem</a>
+        <button 
+          className="navbar-brand btn btn-link text-white fw-bold" 
+          onClick={() => setActiveSection("movimentacoes")} 
+          style={{ textDecoration: "none", border: "none", background: "none" }}
+        >
+          Braskem
+        </button>
         <button 
           className="navbar-toggler" 
           type="button" 
@@ -20,13 +30,20 @@ const MenuSuperior: React.FC = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/dashboard/movimentacoes">Movimentações</Link>
+              <button 
+                className={`nav-link text-white ${activeSection === "movimentacoes" ? "fw-bold" : ""}`} 
+                onClick={() => setActiveSection("movimentacoes")}
+              >
+                Movimentações
+              </button>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/dashboard/participantes">Participantes</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-white" to="/dashboard/roleta">Roleta</Link>
+              <button 
+                className={`nav-link text-white ${activeSection === "participantes" ? "fw-bold" : ""}`} 
+                onClick={() => setActiveSection("participantes")}
+              >
+                Participantes
+              </button>
             </li>
           </ul>
         </div>

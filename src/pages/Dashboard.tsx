@@ -1,18 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { useState } from "react";
 import MenuSuperior from "../components/header";
-import { useMovimentacoesApi } from "../hooks/useMovementsApi";
 import Popup from "../components/Popup";
+import Movimentacoes from "../pages/movements/Movements";
+import Participantes from "../pages/Participants/Participantes";
 
 const Dashboard: React.FC = () => {
-  const { showPopup, popupMessage } = useMovimentacoesApi(null); // Pegando mensagens da API
+  const [activeSection, setActiveSection] = useState<"movimentacoes" | "participantes">("movimentacoes");
 
   return (
     <div className="container-fluid">
-      <MenuSuperior />
-      <Popup show={showPopup} message={popupMessage} /> {/* Exibir mensagens da API */}
+      <MenuSuperior setActiveSection={setActiveSection} activeSection={activeSection} />
+      
+      <Popup show={false} message="" />
 
       <div className="container mt-4">
-        <Outlet />
+        {activeSection === "movimentacoes" ? <Movimentacoes /> : <Participantes />}
       </div>
     </div>
   );
