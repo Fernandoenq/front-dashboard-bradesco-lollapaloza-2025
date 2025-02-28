@@ -1,8 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 
 interface MenuSuperiorProps {
-  setActiveSection: (section: "movimentacoes" | "participantes") => void;
-  activeSection: "movimentacoes" | "participantes";
+  setActiveSection: (section: "movimentacoes" | "participantes" | "roleta") => void;
+  activeSection: "movimentacoes" | "participantes" | "roleta";
 }
 
 const MenuSuperior: React.FC<MenuSuperiorProps> = ({ setActiveSection, activeSection }) => {
@@ -43,6 +43,14 @@ const MenuSuperior: React.FC<MenuSuperiorProps> = ({ setActiveSection, activeSec
                 onClick={() => setActiveSection("participantes")}
               >
                 Participantes
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link text-white ${activeSection === "roleta" ? "fw-bold" : ""}`} 
+                onClick={() => setActiveSection("roleta")}
+              >
+                Roleta
               </button>
             </li>
           </ul>

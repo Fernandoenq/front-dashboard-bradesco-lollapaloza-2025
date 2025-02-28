@@ -23,22 +23,24 @@ const Participantes: React.FC = () => {
       {/* Popup de mensagens */}
       <Popup show={showPopup} message={popupMessage} />
 
-      {/* Seletor de datas */}
+      {/* Seletor de datas estilizado */}
       {loadingDays ? (
         <p>Carregando datas...</p>
       ) : error ? (
         <p className="text-danger">{error}</p>
       ) : (
-        <div className="btn-group mb-3">
-          {eventDays.map((day) => (
-            <button
-              key={day.event_day_id}
-              className={`btn ${selectedEventDayId === day.event_day_id ? "btn-primary" : "btn-outline-secondary"}`}
-              onClick={() => setSelectedEventDayId(day.event_day_id)}
-            >
-              {day.description}
-            </button>
-          ))}
+        <div className="d-flex justify-content-center mb-3">
+          <div className="btn-group">
+            {eventDays.map((day) => (
+              <button
+                key={day.event_day_id}
+                className={`btn ${selectedEventDayId === day.event_day_id ? "btn-dark fw-bold" : "btn-light border"}`}
+                onClick={() => setSelectedEventDayId(day.event_day_id)}
+              >
+                {day.description}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
