@@ -14,7 +14,7 @@ const MenuSuperior: React.FC<MenuSuperiorProps> = ({ setActiveSection, activeSec
           onClick={() => setActiveSection("movimentacoes")} 
           style={{ textDecoration: "none", border: "none", background: "none" }}
         >
-          Braskem
+          Bradesco
         </button>
         <button 
           className="navbar-toggler" 

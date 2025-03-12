@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useEventDaysApi } from "../../hooks/useEventDaysApi";
 import { useRouletteGroupsApi } from "../../hooks/useRouletteGroupsApi";
 import { useAwardsApi } from "../../hooks/useAwardsApi";
+import { useMovimentacoesApi } from "../../hooks/useMovementsApi"; // Importação adicionada
 import dataOptions from "../../data/dataOptions";
 import Popup from "../../components/Popup";
 
@@ -12,6 +13,9 @@ const Roleta: React.FC = () => {
   const [selectedEventDayId, setSelectedEventDayId] = useState<number | null>(null);
   const [selectedRouletteId, setSelectedRouletteId] = useState<number | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>(dataOptions[0]);
+
+  // Importando lógica do botão de download
+  const { downloadExcel, loadingDownload } = useMovimentacoesApi(selectedEventDayId);
 
   // Buscar os dados da API de acordo com as seleções
   const { awards, loading: loadingAwards, error: errorAwards } = useAwardsApi(
@@ -47,7 +51,7 @@ const Roleta: React.FC = () => {
       ) : error ? (
         <p className="text-danger">{error}</p>
       ) : (
-        <div className="d-flex justify-content-center mb-3">
+        <div className="d-flex justify-content-between mb-3">
           <div className="btn-group">
             {eventDays.map((day) => (
               <button
@@ -59,6 +63,14 @@ const Roleta: React.FC = () => {
               </button>
             ))}
           </div>
+          {/* Botão de Baixar Excel */}
+          <button
+            className="btn btn-success"
+            onClick={downloadExcel}
+            disabled={selectedEventDayId === null || loadingDownload}
+          >
+            {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
+          </button>
         </div>
       )}
 

@@ -62,7 +62,6 @@ const Participantes: React.FC = () => {
               <th>CPF</th>
               <th>E-mail</th>
               <th>Telefone</th>
-              <th>Data de Cadastro</th>
             </tr>
           </thead>
           <tbody>
@@ -73,7 +72,6 @@ const Participantes: React.FC = () => {
                   <td>{row.Cpf}</td>
                   <td>{row.Email}</td>
                   <td>{row.Phone}</td>
-                  <td>{row.RegisterDate ? row.RegisterDate.split(" ")[0] : "-"}</td>
                 </tr>
               ))
             ) : (
