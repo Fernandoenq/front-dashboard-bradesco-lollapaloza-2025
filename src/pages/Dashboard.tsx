@@ -1,9 +1,9 @@
 import { useState } from "react";
 import MenuSuperior from "../components/header";
 import Popup from "../components/Popup";
-import Movimentacoes from "../pages/movements/Movements";
-import Participantes from "../pages/participants/Participants";
-import Roleta from "../pages/roulette/Roulette";
+import Movimentacoes from "./movements/MovementsScreen";
+import Participantes from "./participants/ParticipantsScreen";
+import Roleta from "./roulette/RouletteScreen";
 
 const Dashboard: React.FC = () => {
   const [activeSection, setActiveSection] = useState<"movimentacoes" | "participantes" | "roleta">("movimentacoes");
