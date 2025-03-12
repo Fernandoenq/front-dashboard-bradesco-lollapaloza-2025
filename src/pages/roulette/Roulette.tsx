@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useEventDaysApi } from "../../hooks/useEventDaysApi";
 import { useRouletteGroupsApi } from "../../hooks/useRouletteGroupsApi";
-import { useAwardsApi } from "../../hooks/useAwardsApi";
-import { useMovimentacoesApi } from "../../hooks/useMovementsApi"; // Importação adicionada
+import { useAwardsApi } from "../../hooks/useAwardsApi"; // Agora contém as funções de download
 import dataOptions from "../../data/dataOptions";
 import Popup from "../../components/Popup";
 
@@ -14,15 +13,15 @@ const Roleta: React.FC = () => {
   const [selectedRouletteId, setSelectedRouletteId] = useState<number | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>(dataOptions[0]);
 
-  // Importando lógica do botão de download
-  const { downloadExcel, loadingDownload } = useMovimentacoesApi(selectedEventDayId);
-
-  // Buscar os dados da API de acordo com as seleções
-  const { awards, loading: loadingAwards, error: errorAwards } = useAwardsApi(
-    selectedRouletteId, 
-    selectedEventDayId, 
-    selectedOption
-  );
+  // Hook que contém os métodos de download
+  const { 
+    awards, 
+    loading: loadingAwards, 
+    error: errorAwards, 
+    downloadAllPredefinedAwards, 
+    downloadAllAwards, 
+    loadingDownload 
+  } = useAwardsApi(selectedRouletteId, selectedEventDayId, selectedOption);
 
   // Define automaticamente a primeira data disponível
   useEffect(() => {
@@ -37,6 +36,20 @@ const Roleta: React.FC = () => {
       setSelectedRouletteId(roulettes[0].id);
     }
   }, [roulettes]);
+
+  // Função para determinar qual download executar
+  const handleDownload = () => {
+    if (selectedOption === "Premiados") {
+      downloadAllAwards();
+    } else if (selectedOption === "Planilha Base") {
+      downloadAllPredefinedAwards();
+    }
+  };
+
+  // Desabilita o botão caso as condições não sejam atendidas
+  const isDownloadDisabled = 
+    loadingDownload || 
+    (selectedOption === "Premiados" && (selectedEventDayId === null || selectedRouletteId === null));
 
   return (
     <div>
@@ -66,8 +79,8 @@ const Roleta: React.FC = () => {
           {/* Botão de Baixar Excel */}
           <button
             className="btn btn-success"
-            onClick={downloadExcel}
-            disabled={selectedEventDayId === null || loadingDownload}
+            onClick={handleDownload}
+            disabled={isDownloadDisabled}
           >
             {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
           </button>
