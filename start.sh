@@ -2,7 +2,7 @@
 set -e  # Faz o script parar se algum comando falhar
 
 # 🔹 Defina as variáveis do projeto
-PROJECT_NAME="bradesco-atm"  # Nome do projeto/pasta
+PROJECT_NAME="front-dashboard-bradesco-lollapaloza-2025"  # Nome do projeto/pasta
 DOMAIN="bradesco-dashboard.picbrand.dev.br"  # Domínio que será configurado
 PROJECT_PATH="/home/ec2-user/front-dashboard-bradesco-lollapaloza-2025"  # Caminho do projeto
 DEPLOY_PATH="/var/www/$PROJECT_NAME"  # Caminho onde os arquivos serão hospedados
