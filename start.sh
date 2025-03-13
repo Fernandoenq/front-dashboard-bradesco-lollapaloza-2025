@@ -1,9 +1,16 @@
 #!/bin/bash
 set -e  # Faz o script parar se algum comando falhar
 
-cd /home/ec2-user/front-dashboard-bradesco-lollapaloza-2025  # Caminho do projeto
+# 🔹 Defina as variáveis do projeto
+PROJECT_NAME="bradesco-atm"  # Nome do projeto/pasta
+DOMAIN="bradesco-dashboard.picbrand.dev.br"  # Domínio que será configurado
+PROJECT_PATH="/home/ec2-user/front-dashboard-bradesco-lollapaloza-2025"  # Caminho do projeto
+DEPLOY_PATH="/var/www/$PROJECT_NAME"  # Caminho onde os arquivos serão hospedados
 
-# 🔹 Atualiza pacotes e instala dependências
+# 🔹 Muda para a pasta do projeto
+cd "$PROJECT_PATH"
+
+# 🔹 Atualiza pacotes e instala dependências necessárias
 sudo yum update -y
 sudo yum install -y nginx certbot python3-certbot-nginx nodejs git cronie
 
@@ -22,26 +29,28 @@ if [ ! -d "dist" ]; then
 fi
 
 # 🔹 Criando diretório exclusivo para esse projeto
-sudo mkdir -p /var/www/bradesco-atm
-sudo rm -rf /var/www/bradesco-atm/*  # Remove arquivos antigos
-sudo cp -r dist/* /var/www/bradesco-atm/
+sudo mkdir -p "$DEPLOY_PATH"
+sudo rm -rf "$DEPLOY_PATH/*"  # Remove arquivos antigos
+sudo cp -r dist/* "$DEPLOY_PATH/"
 
-# 🔹 Configuração do Nginx para esse novo projeto
-sudo tee /etc/nginx/conf.d/bradesco-atm.conf > /dev/null <<EOF
+# 🔹 Criação dinâmica do arquivo de configuração do Nginx
+NGINX_CONF_PATH="/etc/nginx/conf.d/$PROJECT_NAME.conf"
+
+sudo tee "$NGINX_CONF_PATH" > /dev/null <<EOF
 server {
     listen 80;
-    server_name bradesco-dashboard.picbrand.dev.br;
+    server_name $DOMAIN;
     return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name bradesco-dashboard.picbrand.dev.br;
+    server_name $DOMAIN;
 
-    ssl_certificate /etc/letsencrypt/live/bradesco-dashboard.picbrand.dev.br/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/bradesco-dashboard.picbrand.dev.br/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
-    root /var/www/bradesco-atm;
+    root $DEPLOY_PATH;
     index index.html;
 
     location / {
@@ -52,16 +61,16 @@ server {
 }
 EOF
 
-# 🔹 Testa e inicia o Nginx
+# 🔹 Testa e reinicia o Nginx
 sudo nginx -t
 sudo systemctl restart nginx || true  # Ignora erro se não rodar
 
-# 🔹 Verifica se o Certificado já existe
-if [ -f "/etc/letsencrypt/live/bradesco-dashboard.picbrand.dev.br/fullchain.pem" ]; then
+# 🔹 Configuração do Certificado SSL com Let's Encrypt
+if [ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
     echo "✅ Certificado SSL já existe. Pulando a geração."
 else
     echo "⚡ Gerando certificado SSL..."
-    sudo certbot certonly --nginx -d bradesco-dashboard.picbrand.dev.br --non-interactive --agree-tos -m seuemail@exemplo.com
+    sudo certbot certonly --nginx -d "$DOMAIN" --non-interactive --agree-tos -m seuemail@exemplo.com
 fi
 
 # 🔹 Testa e reinicia o Nginx com SSL ativado
@@ -71,4 +80,4 @@ sudo systemctl restart nginx
 # 🔹 Configura a renovação automática do certificado SSL
 echo "0 0 * * * certbot renew --quiet && systemctl restart nginx" | sudo crontab -
 
-echo "✅ Setup concluído! O React Vite está rodando com HTTPS."
+echo "✅ Setup concluído! O React Vite está rodando com HTTPS no domínio: $DOMAIN"
