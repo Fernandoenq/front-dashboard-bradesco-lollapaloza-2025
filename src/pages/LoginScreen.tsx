@@ -5,7 +5,6 @@ import logo from "../assets/logo.png";
 import { useApi } from "../hooks/useApi"; 
 import Popup from "../components/Popup";
 
-
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
   const { callApi, showPopup, popupMessage } = useApi(); 

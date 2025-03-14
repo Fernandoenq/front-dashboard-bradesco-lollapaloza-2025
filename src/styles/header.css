@@ -1,0 +1,87 @@
+/* Estilização geral do header */
+.header-container {
+    width: 100%;
+    padding: 1rem;
+    background-color: #E40046;
+}
+
+/* Logo / Nome do Banco */
+.header-logo {
+    font-size: 1.8rem;
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* Menu de navegação */
+.header-menu {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Botões do menu */
+.header-button {
+    font-size: 1.2rem;
+    color: white;
+    background: none;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.header-button:hover,
+.header-button.active {
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+}
+
+/* Ajustes para telas menores */
+@media screen and (max-width: 992px) {
+    .header-menu {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .navbar-collapse {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .navbar-collapse.show {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Ajustes para tablets */
+@media screen and (max-width: 768px) {
+    .header-logo {
+        font-size: 1.5rem;
+    }
+
+    .header-button {
+        font-size: 1rem;
+        padding: 0.6rem 1rem;
+    }
+}
+
+/* Ajustes para telas pequenas (celulares antigos) */
+@media screen and (max-width: 480px) {
+    .header-logo {
+        font-size: 1.3rem;
+    }
+
+    .header-button {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+    }
+}

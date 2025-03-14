@@ -1,0 +1,76 @@
+/* Container principal */
+.roulette-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Título */
+.title {
+    font-size: 2rem;
+    text-align: center;
+    color: #E40046;
+    margin-bottom: 20px;
+}
+
+/* Controles (seletor de data, roleta e botão de download) */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+/* Botões */
+.date-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.active-btn {
+    font-weight: bold;
+    background-color: #000 !important;
+    color: white;
+}
+
+.download-btn {
+    font-size: 1rem;
+    padding: 10px 15px;
+}
+
+/* Loading */
+.loading-text {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+/* Tabela responsiva */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word;
+    white-space: nowrap;
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 1.5rem;
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    table {
+        font-size: 0.9rem;
+    }
+}
