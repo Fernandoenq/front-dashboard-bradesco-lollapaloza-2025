@@ -72,7 +72,7 @@ const Participantes: React.FC = () => {
                   <tr key={index}>
                     <td>{row.PersonName}</td>
                     <td>{row.Cpf}</td>
-                    <td>{row.Email}</td>
+                    <td>{row.Mail || "Não informado"}</td>
                     <td>{row.Phone}</td>
                   </tr>
                 ))

@@ -52,7 +52,10 @@
 /* Tabela responsiva */
 .table-container {
     width: 100%;
+    max-height: 400px; /* Define uma altura máxima para a tabela */
+    overflow-y: auto; /* Ativa a rolagem vertical quando necessário */
     overflow-x: auto;
+    border: 1px solid #ddd; /* Adiciona uma borda para separação */
 }
 
 th, td {
@@ -60,6 +63,15 @@ th, td {
     text-align: center;
     word-wrap: break-word;
     white-space: nowrap;
+}
+
+/* Mantém o cabeçalho fixo ao rolar */
+.table thead {
+    position: sticky;
+    top: 0;
+    background: #343a40;
+    color: white;
+    z-index: 2;
 }
 
 /* Responsividade */
