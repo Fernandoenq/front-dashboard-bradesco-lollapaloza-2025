@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useEventDaysApi } from "../../hooks/useEventDaysApi";
 import { useRouletteGroupsApi } from "../../hooks/useRouletteGroupsApi";
-import { useAwardsApi } from "../../hooks/useAwardsApi"; // Agora contém as funções de download
+import { useAwardsApi } from "../../hooks/useAwardsApi";
 import dataOptions from "../../data/dataOptions";
 import Popup from "../../components/Popup";
 import "../../styles/RouletteScreen.css";
@@ -9,18 +9,18 @@ import "../../styles/RouletteScreen.css";
 const Roleta: React.FC = () => {
   const { eventDays, loading: loadingDays, error } = useEventDaysApi();
   const { roulettes, loading: loadingRoulette, error: errorRoulette } = useRouletteGroupsApi();
-  
+
   const [selectedEventDayId, setSelectedEventDayId] = useState<number | null>(null);
   const [selectedRouletteId, setSelectedRouletteId] = useState<number | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>(dataOptions[0]);
 
-  const { 
-    awards, 
-    loading: loadingAwards, 
-    error: errorAwards, 
-    downloadAllPredefinedAwards, 
-    downloadAllAwards, 
-    loadingDownload 
+  const {
+    awards,
+    loading: loadingAwards,
+    error: errorAwards,
+    downloadAllPredefinedAwards,
+    downloadAllAwards,
+    loadingDownload
   } = useAwardsApi(selectedRouletteId, selectedEventDayId, selectedOption);
 
   useEffect(() => {
@@ -43,8 +43,8 @@ const Roleta: React.FC = () => {
     }
   };
 
-  const isDownloadDisabled = 
-    loadingDownload || 
+  const isDownloadDisabled =
+    loadingDownload ||
     (selectedOption === "Premiados" && (selectedEventDayId === null || selectedRouletteId === null));
 
   return (
@@ -53,56 +53,7 @@ const Roleta: React.FC = () => {
 
       <Popup show={false} message="" />
 
-      {/* Seletor de Datas + Botão de Download */}
-      {loadingDays ? (
-        <p className="loading-text">Carregando datas...</p>
-      ) : error ? (
-        <p className="text-danger">{error}</p>
-      ) : (
-        <div className="controls">
-          <div className="date-buttons">
-            {eventDays.map((day) => (
-              <button
-                key={day.event_day_id}
-                className={`btn ${selectedEventDayId === day.event_day_id ? "btn-dark active-btn" : "btn-light border"}`}
-                onClick={() => setSelectedEventDayId(day.event_day_id)}
-              >
-                {day.description}
-              </button>
-            ))}
-          </div>
-          <button
-            className="btn btn-success download-btn"
-            onClick={handleDownload}
-            disabled={isDownloadDisabled}
-          >
-            {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
-          </button>
-        </div>
-      )}
-
-      {/* Seletor de Roletas */}
-      {loadingRoulette ? (
-        <p className="loading-text">Carregando roletas...</p>
-      ) : errorRoulette ? (
-        <p className="text-danger">{errorRoulette}</p>
-      ) : (
-        <div className="controls">
-          <div className="date-buttons">
-            {roulettes.map((roulette) => (
-              <button
-                key={roulette.id}
-                className={`btn ${selectedRouletteId === roulette.id ? "btn-dark active-btn" : "btn-light border"}`}
-                onClick={() => setSelectedRouletteId(roulette.id)}
-              >
-                {roulette.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Seletor de Premiados / Planilha Base */}
+      {/* Seletor de Premiados / Planilha Base (Agora está acima de tudo) */}
       <div className="controls">
         <div className="date-buttons">
           {dataOptions.map((option) => (
@@ -117,6 +68,59 @@ const Roleta: React.FC = () => {
         </div>
       </div>
 
+      {/* Seletor de Datas + Botão de Download (Só aparece se for "Premiados") */}
+      {selectedOption === "Premiados" && (
+        <>
+          {loadingDays ? (
+            <p className="loading-text">Carregando datas...</p>
+          ) : error ? (
+            <p className="text-danger">{error}</p>
+          ) : (
+            <div className="controls">
+              <div className="date-buttons">
+                {eventDays.map((day) => (
+                  <button
+                    key={day.event_day_id}
+                    className={`btn ${selectedEventDayId === day.event_day_id ? "btn-dark active-btn" : "btn-light border"}`}
+                    onClick={() => setSelectedEventDayId(day.event_day_id)}
+                  >
+                    {day.description}
+                  </button>
+                ))}
+              </div>
+              <button
+                className="btn btn-success download-btn"
+                onClick={handleDownload}
+                disabled={isDownloadDisabled}
+              >
+                {loadingDownload ? "📥 Baixando..." : "📥 Baixar Excel"}
+              </button>
+            </div>
+          )}
+
+          {/* Seletor de Roletas */}
+          {loadingRoulette ? (
+            <p className="loading-text">Carregando roletas...</p>
+          ) : errorRoulette ? (
+            <p className="text-danger">{errorRoulette}</p>
+          ) : (
+            <div className="controls">
+              <div className="date-buttons">
+                {roulettes.map((roulette) => (
+                  <button
+                    key={roulette.id}
+                    className={`btn ${selectedRouletteId === roulette.id ? "btn-dark active-btn" : "btn-light border"}`}
+                    onClick={() => setSelectedRouletteId(roulette.id)}
+                  >
+                    {roulette.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
       {/* Exibição das Tabelas */}
       {loadingAwards ? (
         <p className="loading-text">Carregando dados...</p>
@@ -127,29 +131,49 @@ const Roleta: React.FC = () => {
           <table className="table table-bordered table-striped">
             <thead className="table-dark text-center">
               <tr>
-                <th>Data do Prêmio</th>
-                <th>Status</th>
-                <th>CPF</th>
-                <th>Nome</th>
-                <th>Brinde</th>
-                <th>Data Programada</th>
+                {selectedOption === "Premiados" ? (
+                  <>
+                    <th>Data do Prêmio</th>
+                    <th>Status</th>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                    <th>Brinde</th>
+                    <th>Data Programada</th>
+                  </>
+                ) : (
+                  <>
+                    <th>Brinde</th>
+                    <th>Data Programada</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
               {awards.length > 0 ? (
                 awards.map((row, index) => (
                   <tr key={index} className={row.AwardStatus === "Resgatado" ? "table-success" : "table-warning"}>
-                    <td>{row.AwardDate || "-"}</td>
-                    <td>{row.AwardStatus}</td>
-                    <td>{row.Cpf || "-"}</td>
-                    <td>{row.PersonName || "-"}</td>
-                    <td>{row.GiftName || "-"}</td>
-                    <td>{row.PredefinedDateTime.split(" ")[0]}</td>
+                    {selectedOption === "Premiados" ? (
+                      <>
+                        <td>{row.AwardDate || "-"}</td>
+                        <td>{row.AwardStatus}</td>
+                        <td>{row.Cpf || "-"}</td>
+                        <td>{row.PersonName || "-"}</td>
+                        <td>{row.GiftName || "-"}</td>
+                        <td>{row.AwardDate || "-"}</td> {/* Exibindo a data programada igual à data do prêmio */}
+                      </>
+                    ) : (
+                      <>
+                        <td>{row.GiftName || "-"}</td>
+                        <td>{row.AwardDate || "-"}</td> {/* Exibindo a data programada igual à data do prêmio */}
+                      </>
+                    )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="text-center">Nenhum dado encontrado.</td>
+                  <td colSpan={selectedOption === "Premiados" ? 6 : 2} className="text-center">
+                    Nenhum dado encontrado.
+                  </td>
                 </tr>
               )}
             </tbody>
